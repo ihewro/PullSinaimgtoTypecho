@@ -39,8 +39,8 @@
 
 ## 使用方法
 
-* 下载`Pull.php` 复制到你的博客主题文件夹下（无所谓什么主题）
-* 在当前主题的`function.php` 头部里面加上
+* 下载`Pull.php` 复制到你的博客主题文件夹下（无所谓什么主题都可以）
+* 打开当前主题目录下面的的`function.php` 文件，在头部里面加上以下代码
 
 ```php
 require_once("Pull.php");
@@ -49,7 +49,7 @@ require_once("Pull.php");
 * 然后访问下面地址：
 
 ```
-https://xxx.com/?action=pullsina&key=[在pull.php文件中自己修改key变量的值]
+https://xxx.com/?action=pullsina&key=[在pull.php文件中自己修改$GLOBALS['key']变量的值]
 
 //如我自己的博客
 https://www.ihewro.com/?action=pullsina&key=ihewro
@@ -64,5 +64,8 @@ https://www.ihewro.com/?action=pullsina&key=ihewro
 ## 相关
 
 [微博图床禁止外链的临时解决办法](https://www.willnet.net/index.php/archives/141/)
+
+
+[新浪图床是不是不给用了 我调用的图片都是 403 了](https://www.v2ex.com/t/558239)
 
 

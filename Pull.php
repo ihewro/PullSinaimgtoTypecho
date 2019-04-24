@@ -18,16 +18,17 @@ $key = "ihewro";
 // 【变量说明】：
 //  true 表示执行该接口不会修改数据库内容，只会显示数据库中含有新浪图床的数目信息，
 //  false 表示会自动下载新浪图片图片到本地服务器并修改数据库内容
-$GLOBALS['is_replace'] = true;
+$GLOBALS['is_replace'] = false;
 
 // 【变量说明】每次替换的数目，为了防止替换数目太多一直处于等待状态，你可以将这个变量设置较小的值，多次调用该接口
-$GLOBALS['limit'] = 0;
+$GLOBALS['limit'] = 4;
 
 //这个变量请勿修改值
 $GLOBALS['haveNum'] = 0;//已经替换的图片数目
 
 $GLOBALS['blog_url'] = $this->options->rootUrl;
 
+$GLOBALS['patten'] = '/(https|http):\/\/[^\s|\"|\)]+sinaimg\.cn[^\s|\"|\)]+/';
 
 
 function getDataFromWebUrl($url){
@@ -86,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             $text = preg_replace_callback('/\[\d\]:\s(.*?sinaimg\.cn.*)\n?/',"replaceImage",
                 $text);*/
 
-            $text = preg_replace_callback('/(https|http):\/\/.*?sinaimg\.cn[^\s|\"|\)]+/',"replaceImage",$text);
+            $text = preg_replace_callback($GLOBALS['patten'],"replaceImage",$text);
 
             //写数据库
             if ($GLOBALS['is_replace']){
@@ -109,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             }
             print_l("替换第".$index."条评论的图片",1,"underline","开始");
             $text = $item['text'];//不能转换成HTML，否则会导致数据库markdown语法失效
-            $text = preg_replace_callback('/(https|http):\/\/.*?sinaimg\.cn[^\s|\"|\)]+/',"replaceImage",$text);
+            $text = preg_replace_callback($GLOBALS['patten'],"replaceImage",$text);
             //写数据库
             if ($GLOBALS['is_replace']){
                 $db->query($db->update('table.comments')->rows(array('text' => $text))->where('coid = ?', $item['coid']));
@@ -130,7 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             }
             print_l("替换第".$index."个字段的图片",1,"underline","开始");
             $text = $item['str_value'];//不能转换成HTML，否则会导致数据库markdown语法失效
-            $text = preg_replace_callback('/(https|http):\/\/.*?sinaimg\.cn[^\s|\"|\)]+/',"replaceImage",$text);
+            $text = preg_replace_callback($GLOBALS['patten'],"replaceImage",$text);
             //写数据库
             if ($GLOBALS['is_replace']){
                 $db->query($db->update('table.fields')->rows(array('str_value' => $text))->where('cid = ? and name = ?',
@@ -152,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             }
             print_l("替换第".$index."个设置的图片",1,"underline","开始");
             $text = $item['value'];//不能转换成HTML，否则会导致数据库markdown语法失效
-            $text = preg_replace_callback('/(https|http):\/\/.*?sinaimg\.cn[^\s|\"|\)]+/',"replaceImage",$text);
+            $text = preg_replace_callback($GLOBALS['patten'],"replaceImage",$text);
             //写数据库
             if ($GLOBALS['is_replace']){
                 $db->query($db->update('table.options')->rows(array('value' => $text))->where('user = ? and name = ?',

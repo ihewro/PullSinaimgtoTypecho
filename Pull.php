@@ -18,9 +18,16 @@ $key = "ihewro";
 // 【变量说明】：
 //  true 表示执行该接口不会修改数据库内容，只会显示数据库中含有新浪图床的数目信息，
 //  false 表示会自动下载新浪图片图片到本地服务器并修改数据库内容
-$GLOBALS['is_replace'] = false;
+$GLOBALS['is_replace'] = true;
+
+// 【变量说明】每次替换的数目，为了防止替换数目太多一直处于等待状态，你可以将这个变量设置较小的值，多次调用该接口
+$GLOBALS['limit'] = 0;
+
+//这个变量请勿修改值
+$GLOBALS['haveNum'] = 0;//已经替换的图片数目
 
 $GLOBALS['blog_url'] = $this->options->rootUrl;
+
 
 
 function getDataFromWebUrl($url){
@@ -45,8 +52,13 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $action = @$_GET['action'];
     if($action == "pullsina"){
 
+
         //显示提示信息
-        print_l("开始执行新浪图床拉取到本地服务器……@ihewro",3,"normal");
+        if ($GLOBALS['is_replace']){
+            print_l("开始执行新浪图床拉取到本地服务器……@ihewro",3,"normal");
+        }else{
+            print_l("下面为你的博客包含新浪图片的列表，本次操作不会替换和修改数据库，请修改『is_replace』变量为true进行执行……@ihewro",3,"underline","注意");
+        }
 
         $db = Typecho_Db::get();//获取数据库对象
 
@@ -57,6 +69,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         print_l(count($content)."篇文章含有新浪图床的图片",2,"normal","文章&&独立页面");
         $index = 1;
         foreach ($content as $item){
+            if ($GLOBALS['haveNum'] > $GLOBALS['limit']){
+                break;
+            }
             print_l("替换第".$index."篇文章的图片",1,"underline","开始");
             $text = $item['text'];//不能转换成HTML，否则会导致数据库markdown语法失效
 
@@ -89,6 +104,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         print_l(count($comment)."条评论含有新浪图床的图片",2,"normal","评论");
         $index = 1;
         foreach ($comment as $item){
+            if ($GLOBALS['haveNum'] > $GLOBALS['limit']){
+                break;
+            }
             print_l("替换第".$index."条评论的图片",1,"underline","开始");
             $text = $item['text'];//不能转换成HTML，否则会导致数据库markdown语法失效
             $text = preg_replace_callback('/(https|http):\/\/.*?sinaimg\.cn[^\s|\"|\)]+/',"replaceImage",$text);
@@ -107,6 +125,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         print_l(count($fields)."个字段含有新浪图床的图片",2,"normal","评论");
         $index = 1;
         foreach ($fields as $item){
+            if ($GLOBALS['haveNum'] > $GLOBALS['limit']){
+                break;
+            }
             print_l("替换第".$index."个字段的图片",1,"underline","开始");
             $text = $item['str_value'];//不能转换成HTML，否则会导致数据库markdown语法失效
             $text = preg_replace_callback('/(https|http):\/\/.*?sinaimg\.cn[^\s|\"|\)]+/',"replaceImage",$text);
@@ -120,19 +141,21 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         }
 
         //替换设置里面
-
         $sql_options = $db->select('value','user','name')->from('table.options')//查询评论
         ->where('value like ?', "%sinaimg.cn%");
         $options = $db->fetchAll($sql_options);
         print_l(count($options)."个设置含有新浪图床的图片",2,"normal","评论");
         $index = 1;
         foreach ($options as $item){
+            if ($GLOBALS['haveNum'] > $GLOBALS['limit']){
+                break;
+            }
             print_l("替换第".$index."个设置的图片",1,"underline","开始");
             $text = $item['value'];//不能转换成HTML，否则会导致数据库markdown语法失效
             $text = preg_replace_callback('/(https|http):\/\/.*?sinaimg\.cn[^\s|\"|\)]+/',"replaceImage",$text);
             //写数据库
             if ($GLOBALS['is_replace']){
-                $db->query($db->update('table.fields')->rows(array('value' => $text))->where('user = ? and name = ?',
+                $db->query($db->update('table.options')->rows(array('value' => $text))->where('user = ? and name = ?',
                     $item['user'],$item['name']));
             }
             print_l("替换第".$index."个设置的所有图片",3,"underline","成功");
@@ -176,15 +199,19 @@ function print_l($str,$num = 1,$type = "normal",$prefix = "",$suffix = ""){
 
 function replaceImage($matches){
     $url = $matches[0];
-    if ($GLOBALS['is_replace']){//上传并替换
-        $url = uploadPic($url);
-        print_l($matches[0]."已替换成".$url,1);
-        return $url;
-    }else{//不替换
-        print_l($url,1);
-        return $url;
+    if ($GLOBALS['haveNum'] <= $GLOBALS['limit']){
+        $GLOBALS['haveNum'] ++;
+        if ($GLOBALS['is_replace']){//上传并替换
+            $url = uploadPic($url);
+            print_l($matches[0]."已替换成".$url,1);
+            return $url;
+        }else{//不替换
+            print_l($url,1);
+            return $url;
+        }
+    }else{
+        return $url;//不替换
     }
-
 }
 
 

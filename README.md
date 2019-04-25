@@ -55,7 +55,7 @@ https://xxx.com/?action=pullsina&key=[在pull.php文件中自己修改$GLOBALS['
 https://www.ihewro.com/?action=pullsina&key=ihewro
 ```
 
-* 4.修改`Pull.php`的`$GLOBALS['is_replace']`为`true`，保存后重新调用接口。（**如果需要替换的图片数目很多，可以修改`$GLOBALS['limit']`变量限制每次调用接口的替换图片的数目**）
+* 4.修改`Pull.php`的`$GLOBALS['is_replace']`为`true`，保存后重新调用接口。（**如果需要替换的图片数目很多，可以修改`$GLOBALS['limit']`变量限制每次调用接口的替换图片的数目，然后多次调用即可**）
 
 **❗️❗️❗️任务进行中，请勿刷新或者关闭页面，否则会中断任务❗️❗️❗️**
 
@@ -65,7 +65,7 @@ https://www.ihewro.com/?action=pullsina&key=ihewro
 
 ## 相关
 
-[微博图床禁止外链的临时解决办法](https://www.willnet.net/index.php/archives/141/)
+❗️该方法会导致评论无法判断来源referrer导致无法评论❗️[~~微博图床禁止外链的临时解决办法~~](https://www.willnet.net/index.php/archives/141/)
 
 
 [新浪图床是不是不给用了 我调用的图片都是 403 了](https://www.v2ex.com/t/558239)

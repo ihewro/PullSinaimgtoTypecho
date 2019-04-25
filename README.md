@@ -39,14 +39,14 @@
 
 ## 使用方法
 
-* 下载`Pull.php` 复制到你的博客主题文件夹下（无所谓什么主题都可以）
-* 打开当前主题目录下面的的`function.php` 文件，在头部里面加上以下代码
+* 1.下载`Pull.php` 复制到你的博客主题文件夹下（无所谓什么主题都可以）
+* 2.打开当前主题目录下面的的`function.php` 文件，在头部里面加上以下代码
 
 ```php
 require_once("Pull.php");
 ```
 
-* 然后访问下面地址：
+* 3.访问下面地址查看你的博客含有新浪图片列表：
 
 ```
 https://xxx.com/?action=pullsina&key=[在pull.php文件中自己修改$GLOBALS['key']变量的值]
@@ -54,6 +54,8 @@ https://xxx.com/?action=pullsina&key=[在pull.php文件中自己修改$GLOBALS['
 //如我自己的博客
 https://www.ihewro.com/?action=pullsina&key=ihewro
 ```
+
+* 4.修改`Pull.php`的`$GLOBALS['is_replace']`为`true`，保存后重新调用接口。（**如果需要替换的图片数目很多，可以修改`$GLOBALS['limit']`变量限制每次调用接口的替换图片的数目**）
 
 **❗️❗️❗️任务进行中，请勿刷新或者关闭页面，否则会中断任务❗️❗️❗️**
 

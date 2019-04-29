@@ -65,13 +65,10 @@ https://www.ihewro.com/?action=pullsina&key=ihewro
 
 ## 相关
 
-❗️该方法会导致评论无法判断来源referrer导致无法评论❗️[~~微博图床禁止外链的临时解决办法~~](https://www.willnet.net/index.php/archives/141/)
+❗️❗️该方法会导致评论无法判断来源referrer导致无法评论❗️❗️[~~微博图床禁止外链的临时解决办法~~](https://www.willnet.net/index.php/archives/141/)
 
 
 [新浪图床是不是不给用了 我调用的图片都是 403 了](https://www.v2ex.com/t/558239)
 
 
-
-
-上传图片失败,错误码{"status":1,"data":"https:\/\/www.ihewro.com\/usr\/uploads\/time\/5cc662af2f219.jpg"}
 
